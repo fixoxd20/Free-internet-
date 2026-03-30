@@ -5,8 +5,8 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 # Environment variables for Bot Token and Admin ID
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = os.getenv("ADMIN_ID")
+BOT_TOKEN = os.getenv("8752004924:AAGzno5U9YIw9V1bm7M5F9C1SqaipCVDCT4")
+ADMIN_ID = os.getenv("8264584451")
 
 # Telegram API URL for sending photos
 API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
